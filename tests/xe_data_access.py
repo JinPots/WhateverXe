@@ -44,6 +44,9 @@ int main() {
         identity="com.apple.coremedia.videoencoder"; assert(allowed((void*)1,true));
         identity="com.apple.coremedia.videoencoder.zonto"; assert(allowed((void*)1,true));
         identity="com.apple.replayd"; assert(allowed((void*)1,true));
+        identity="com.apple.Music"; assert(allowed((void*)1,true));
+        identity="com.apple.TV"; assert(allowed((void*)1,true));
+        identity="com.apple.Podcasts"; assert(allowed((void*)1,true));
         identity="com.apple.WebKit.WebContent"; assert(!allowed((void*)1,true));
         identity=nullptr; assert(!allowed((void*)1,true)); identity="com.apple.WebKit.GPU";
         signingIdentity=nullptr; assert(!allowed((void*)1,true)); signingIdentity=getIdentity;

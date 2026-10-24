@@ -52,7 +52,8 @@ int main() {
         "com.apple.mediaanalysisd", "com.apple.photolibraryd", "com.apple.coremedia.videodecoder",
         "com.apple.coremedia.videodecoder.zonto", "com.apple.coremedia.videoencoder",
         "com.apple.coremedia.videoencoder.zonto", "com.apple.replayd", "com.apple.screencapture",
-        "com.apple.controlcenter", "com.apple.QuickTimePlayerX",
+        "com.apple.controlcenter", "com.apple.QuickTimePlayerX", "com.apple.Music",
+        "com.apple.TV", "com.apple.Podcasts",
         "com.apple.quicklook.ThumbnailsAgent", "com.apple.QuickLook.ThumbnailService",
         "com.apple.WebKit.WebContent", "com.apple.Safari", "com.apple.PhotosExtra"}) {
         for (bool platform : {false, true}) for (bool valid : {false, true}) {
@@ -74,7 +75,10 @@ int main() {
                 !strcmp(identity, "com.apple.replayd") ||
                 !strcmp(identity, "com.apple.screencapture") ||
                 !strcmp(identity, "com.apple.controlcenter") ||
-                !strcmp(identity, "com.apple.QuickTimePlayerX"));
+                !strcmp(identity, "com.apple.QuickTimePlayerX") ||
+                !strcmp(identity, "com.apple.Music") ||
+                !strcmp(identity, "com.apple.TV") ||
+                !strcmp(identity, "com.apple.Podcasts"));
             assert(photos(identity, platform, valid) == expectedPhotos);
             assert(video(identity, platform, valid) == expectedVideo);
             assert(gpuClient(identity, platform, valid) ==

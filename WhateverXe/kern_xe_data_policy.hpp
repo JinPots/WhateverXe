@@ -32,7 +32,10 @@ inline bool video(const char *identity, bool platformBinary, bool valid) {
     return !strcmp(identity, "com.apple.replayd") ||
            !strcmp(identity, "com.apple.screencapture") ||
            !strcmp(identity, "com.apple.controlcenter") ||
-           !strcmp(identity, "com.apple.QuickTimePlayerX");
+           !strcmp(identity, "com.apple.QuickTimePlayerX") ||
+           !strcmp(identity, "com.apple.Music") ||
+           !strcmp(identity, "com.apple.TV") ||
+           !strcmp(identity, "com.apple.Podcasts");
 }
 inline bool gpuClient(const char *identity, bool platformBinary, bool valid) {
     return webKitGPU(identity, platformBinary, valid) ||
