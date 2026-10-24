@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.5.1
+
+### Fixed
+
+- Fix internal panel flickering: default to 8-bit depth when EDID unavailable for internal eDP panels.
+- Fix create draft release workflow: remove hardcoded repository check.
+
+### Added
+
+- Add audio decoder/encoder identities to video data policy for Apple Music hi-res lossless playback support.
+- Add media app identities (Photos, Music, TV, Podcasts, QuickTime Player X, etc.) to video data policy.
+
 ## 0.5.0
 
 The newly added GPUs require [WhateverXe Graphics 0.2.0](https://github.com/b00t0x/WhateverXe-Graphics/releases). Its rendering fixes also benefit previously supported GPUs; updating both components is recommended.
