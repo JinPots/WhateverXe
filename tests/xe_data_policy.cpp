@@ -50,6 +50,9 @@ int main() {
     for (const char *identity : {static_cast<const char *>(nullptr), "", "com.apple.WebKit.GPU",
         "com.apple.Photos", "com.apple.Photos.PhotosUICoreWorker", "com.apple.photoanalysisd",
         "com.apple.mediaanalysisd", "com.apple.photolibraryd", "com.apple.coremedia.videodecoder",
+        "com.apple.coremedia.videodecoder.zonto", "com.apple.coremedia.videoencoder",
+        "com.apple.coremedia.videoencoder.zonto", "com.apple.replayd", "com.apple.screencapture",
+        "com.apple.controlcenter", "com.apple.QuickTimePlayerX",
         "com.apple.quicklook.ThumbnailsAgent", "com.apple.QuickLook.ThumbnailService",
         "com.apple.WebKit.WebContent", "com.apple.Safari", "com.apple.PhotosExtra"}) {
         for (bool platform : {false, true}) for (bool valid : {false, true}) {
@@ -59,12 +62,23 @@ int main() {
                 !strcmp(identity, "com.apple.photoanalysisd") ||
                 !strcmp(identity, "com.apple.mediaanalysisd") ||
                 !strcmp(identity, "com.apple.photolibraryd") ||
-                !strcmp(identity, "com.apple.coremedia.videodecoder") ||
+                !strncmp(identity, "com.apple.coremedia.videodecoder", 32) ||
+                !strncmp(identity, "com.apple.coremedia.videoencoder", 32) ||
+                !strcmp(identity, "com.apple.replayd") ||
+                !strcmp(identity, "com.apple.screencapture") ||
                 !strcmp(identity, "com.apple.quicklook.ThumbnailsAgent") ||
                 !strcmp(identity, "com.apple.QuickLook.ThumbnailService"));
+            const bool expectedVideo = platform && valid && identity && (
+                !strncmp(identity, "com.apple.coremedia.videoencoder", 32) ||
+                !strncmp(identity, "com.apple.coremedia.videodecoder", 32) ||
+                !strcmp(identity, "com.apple.replayd") ||
+                !strcmp(identity, "com.apple.screencapture") ||
+                !strcmp(identity, "com.apple.controlcenter") ||
+                !strcmp(identity, "com.apple.QuickTimePlayerX"));
             assert(photos(identity, platform, valid) == expectedPhotos);
+            assert(video(identity, platform, valid) == expectedVideo);
             assert(gpuClient(identity, platform, valid) ==
-                (expectedPhotos || (platform && valid && identity && !strcmp(identity, "com.apple.WebKit.GPU"))));
+                (expectedPhotos || expectedVideo || (platform && valid && identity && !strcmp(identity, "com.apple.WebKit.GPU"))));
         }
     }
     // No path-only fallback, including formerly accepted OS/App Cryptex roots,

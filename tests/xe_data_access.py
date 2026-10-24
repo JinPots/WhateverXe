@@ -41,6 +41,9 @@ int main() {
         valid=false; assert(!allowed((void*)1,true)); valid=true;
         identity="com.apple.Photos"; assert(allowed((void*)1,true));
         identity="com.apple.mediaanalysisd"; assert(allowed((void*)1,true));
+        identity="com.apple.coremedia.videoencoder"; assert(allowed((void*)1,true));
+        identity="com.apple.coremedia.videoencoder.zonto"; assert(allowed((void*)1,true));
+        identity="com.apple.replayd"; assert(allowed((void*)1,true));
         identity="com.apple.WebKit.WebContent"; assert(!allowed((void*)1,true));
         identity=nullptr; assert(!allowed((void*)1,true)); identity="com.apple.WebKit.GPU";
         signingIdentity=nullptr; assert(!allowed((void*)1,true)); signingIdentity=getIdentity;

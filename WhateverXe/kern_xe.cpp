@@ -6613,9 +6613,6 @@ void XE::wrapAlderLakeNGamma10(void *path,void *transaction,uint32_t control) {
 }
 
 void XE::wrapDisplay13GMBusWrite(void *access,uint64_t reg,uint32_t value) {
-    if (reg == 0x70030 || reg == 0x71030 || reg == 0x72030 || reg == 0x73030) {
-        value &= ~3U;
-    }
     // DISPLAY13_COMBO_FRACTION: qualified nominal writer, physical reference,
     // retained controller/manager. No MMIO or other port's PLL inference.
     if(callbackXE->display13FramebufferRequested && callbackXE->xeProfile.display==XELP::Display::XeLPD &&
@@ -15193,7 +15190,7 @@ void XE::wrapTGLModeTiming(void *controller,void *fb,void *timing) {
  const auto encoding=*reinterpret_cast<uint16_t *>(t+0x88);
  auto &depth=*reinterpret_cast<uint16_t *>(t+0x8A);
  const auto before=depth;
- depth=TGLPanelDepth::clamp(encoding,before,maximum ? maximum : 8);
+ depth=TGLPanelDepth::clamp(encoding,before,maximum);
  uint64_t record[]={ddi,maximum,encoding,before,depth};
  IORegistryEntry::getRegistryRoot()->setProperty("TGLPanelDepthLast",record,sizeof(record));
 }
@@ -16721,9 +16718,6 @@ void XE::wrapTGLRegisterWrite(void *access, unsigned long reg, uint32_t value) {
 			return;
 		}
 	}
-	if (reg == 0x70030 || reg == 0x71030 || reg == 0x72030 || reg == 0x73030) {
-		value &= ~3U;
-	}
 	tglProgramRecord(access, reg, value, 0, __builtin_return_address(0));
 	tglStreamAck(access, reg, value, 0, __builtin_return_address(0));
 	auto irq=reg==0x190010 ? tglFBIRQBegin(0,callbackXE->tglObservationController,value,
@@ -16776,9 +16770,6 @@ void XE::wrapTGLRegisterWrite(void *access, unsigned long reg, uint32_t value) {
 }
 
 void XE::wrapTGLFastRegisterWrite(void *access, unsigned long reg, uint32_t value) {
-	if (reg == 0x70030 || reg == 0x71030 || reg == 0x72030 || reg == 0x73030) {
-		value &= ~3U;
-	}
 	tglProgramRecord(access, reg, value, 1, __builtin_return_address(0));
 	tglStreamAck(access, reg, value, 1, __builtin_return_address(0));
 	auto irq=reg==0x190010 ? tglFBIRQBegin(0,callbackXE->tglObservationController,value,

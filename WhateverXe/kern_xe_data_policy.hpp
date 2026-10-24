@@ -17,12 +17,27 @@ inline bool photos(const char *identity, bool platformBinary, bool valid) {
     return !strcmp(identity, "com.apple.photoanalysisd") ||
            !strcmp(identity, "com.apple.mediaanalysisd") ||
            !strcmp(identity, "com.apple.photolibraryd") ||
-           !strcmp(identity, "com.apple.coremedia.videodecoder") ||
+           !strncmp(identity, "com.apple.coremedia.videodecoder", 32) ||
+           !strncmp(identity, "com.apple.coremedia.videoencoder", 32) ||
+           !strcmp(identity, "com.apple.replayd") ||
+           !strcmp(identity, "com.apple.screencapture") ||
            !strcmp(identity, "com.apple.quicklook.ThumbnailsAgent") ||
            !strcmp(identity, "com.apple.QuickLook.ThumbnailService");
 }
+inline bool video(const char *identity, bool platformBinary, bool valid) {
+    if (!platformBinary || !valid || !identity) return false;
+    if (!strncmp(identity, "com.apple.coremedia.videoencoder", 32) ||
+        !strncmp(identity, "com.apple.coremedia.videodecoder", 32))
+        return true;
+    return !strcmp(identity, "com.apple.replayd") ||
+           !strcmp(identity, "com.apple.screencapture") ||
+           !strcmp(identity, "com.apple.controlcenter") ||
+           !strcmp(identity, "com.apple.QuickTimePlayerX");
+}
 inline bool gpuClient(const char *identity, bool platformBinary, bool valid) {
-    return webKitGPU(identity, platformBinary, valid) || photos(identity, platformBinary, valid);
+    return webKitGPU(identity, platformBinary, valid) ||
+           photos(identity, platformBinary, valid) ||
+           video(identity, platformBinary, valid);
 }
 inline bool service(const char *path, Client client = Client::Compiler) {
     // Compiler access keeps its original exact-path contract. WebKit has no
