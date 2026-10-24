@@ -15190,7 +15190,10 @@ void XE::wrapTGLModeTiming(void *controller,void *fb,void *timing) {
  const auto encoding=*reinterpret_cast<uint16_t *>(t+0x88);
  auto &depth=*reinterpret_cast<uint16_t *>(t+0x8A);
  const auto before=depth;
- depth=TGLPanelDepth::clamp(encoding,before,maximum);
+ // Default to 8-bit for internal panels when EDID maximum is unavailable
+ // to prevent FRC dithering flicker on specific colors.
+ const auto effectiveMaximum = maximum ? maximum : 8;
+ depth=TGLPanelDepth::clamp(encoding,before,effectiveMaximum);
  uint64_t record[]={ddi,maximum,encoding,before,depth};
  IORegistryEntry::getRegistryRoot()->setProperty("TGLPanelDepthLast",record,sizeof(record));
 }
