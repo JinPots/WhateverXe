@@ -51,7 +51,9 @@ int main() {
         "com.apple.Photos", "com.apple.Photos.PhotosUICoreWorker", "com.apple.photoanalysisd",
         "com.apple.mediaanalysisd", "com.apple.photolibraryd", "com.apple.coremedia.videodecoder",
         "com.apple.coremedia.videodecoder.zonto", "com.apple.coremedia.videoencoder",
-        "com.apple.coremedia.videoencoder.zonto", "com.apple.replayd", "com.apple.screencapture",
+        "com.apple.coremedia.videoencoder.zonto", "com.apple.coremedia.audiodecoder",
+        "com.apple.coremedia.audiodecoder.zonto", "com.apple.coremedia.audioencoder",
+        "com.apple.coremedia.audioencoder.zonto", "com.apple.replayd", "com.apple.screencapture",
         "com.apple.controlcenter", "com.apple.QuickTimePlayerX", "com.apple.Music",
         "com.apple.TV", "com.apple.Podcasts",
         "com.apple.quicklook.ThumbnailsAgent", "com.apple.QuickLook.ThumbnailService",
@@ -72,6 +74,8 @@ int main() {
             const bool expectedVideo = platform && valid && identity && (
                 !strncmp(identity, "com.apple.coremedia.videoencoder", 32) ||
                 !strncmp(identity, "com.apple.coremedia.videodecoder", 32) ||
+                !strncmp(identity, "com.apple.coremedia.audioencoder", 32) ||
+                !strncmp(identity, "com.apple.coremedia.audiodecoder", 32) ||
                 !strcmp(identity, "com.apple.replayd") ||
                 !strcmp(identity, "com.apple.screencapture") ||
                 !strcmp(identity, "com.apple.controlcenter") ||

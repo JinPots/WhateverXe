@@ -27,7 +27,9 @@ inline bool photos(const char *identity, bool platformBinary, bool valid) {
 inline bool video(const char *identity, bool platformBinary, bool valid) {
     if (!platformBinary || !valid || !identity) return false;
     if (!strncmp(identity, "com.apple.coremedia.videoencoder", 32) ||
-        !strncmp(identity, "com.apple.coremedia.videodecoder", 32))
+        !strncmp(identity, "com.apple.coremedia.videodecoder", 32) ||
+        !strncmp(identity, "com.apple.coremedia.audioencoder", 32) ||
+        !strncmp(identity, "com.apple.coremedia.audiodecoder", 32))
         return true;
     return !strcmp(identity, "com.apple.replayd") ||
            !strcmp(identity, "com.apple.screencapture") ||
