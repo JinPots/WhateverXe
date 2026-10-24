@@ -10,6 +10,20 @@ enum class Client { None, Compiler, WebKitGPU };
 inline bool webKitGPU(const char *identity, bool platformBinary, bool valid) {
     return platformBinary && valid && identity && !strcmp(identity, "com.apple.WebKit.GPU");
 }
+inline bool photos(const char *identity, bool platformBinary, bool valid) {
+    if (!platformBinary || !valid || !identity) return false;
+    if (!strncmp(identity, "com.apple.Photos", 16) && (identity[16] == '\0' || identity[16] == '.'))
+        return true;
+    return !strcmp(identity, "com.apple.photoanalysisd") ||
+           !strcmp(identity, "com.apple.mediaanalysisd") ||
+           !strcmp(identity, "com.apple.photolibraryd") ||
+           !strcmp(identity, "com.apple.coremedia.videodecoder") ||
+           !strcmp(identity, "com.apple.quicklook.ThumbnailsAgent") ||
+           !strcmp(identity, "com.apple.QuickLook.ThumbnailService");
+}
+inline bool gpuClient(const char *identity, bool platformBinary, bool valid) {
+    return webKitGPU(identity, platformBinary, valid) || photos(identity, platformBinary, valid);
+}
 inline bool service(const char *path, Client client = Client::Compiler) {
     // Compiler access keeps its original exact-path contract. WebKit has no
     // path-based fallback: even a familiar location must pass signature checks.

@@ -47,6 +47,26 @@ int main() {
             assert(webKitGPU(identity, platform, valid) ==
                 (identity && std::string(identity) == "com.apple.WebKit.GPU" && platform && valid));
     }
+    for (const char *identity : {static_cast<const char *>(nullptr), "", "com.apple.WebKit.GPU",
+        "com.apple.Photos", "com.apple.Photos.PhotosUICoreWorker", "com.apple.photoanalysisd",
+        "com.apple.mediaanalysisd", "com.apple.photolibraryd", "com.apple.coremedia.videodecoder",
+        "com.apple.quicklook.ThumbnailsAgent", "com.apple.QuickLook.ThumbnailService",
+        "com.apple.WebKit.WebContent", "com.apple.Safari", "com.apple.PhotosExtra"}) {
+        for (bool platform : {false, true}) for (bool valid : {false, true}) {
+            const bool expectedPhotos = platform && valid && identity && (
+                !strcmp(identity, "com.apple.Photos") ||
+                !strcmp(identity, "com.apple.Photos.PhotosUICoreWorker") ||
+                !strcmp(identity, "com.apple.photoanalysisd") ||
+                !strcmp(identity, "com.apple.mediaanalysisd") ||
+                !strcmp(identity, "com.apple.photolibraryd") ||
+                !strcmp(identity, "com.apple.coremedia.videodecoder") ||
+                !strcmp(identity, "com.apple.quicklook.ThumbnailsAgent") ||
+                !strcmp(identity, "com.apple.QuickLook.ThumbnailService"));
+            assert(photos(identity, platform, valid) == expectedPhotos);
+            assert(gpuClient(identity, platform, valid) ==
+                (expectedPhotos || (platform && valid && identity && !strcmp(identity, "com.apple.WebKit.GPU"))));
+        }
+    }
     // No path-only fallback, including formerly accepted OS/App Cryptex roots,
     // updated/staged layouts, and arbitrary relocated or renamed copies.
     for (const char *root : {"", "/System/Volumes/Preboot/Cryptexes/OS",

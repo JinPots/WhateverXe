@@ -42,7 +42,7 @@ bool allowed(void *vnode, bool executable) {
         // Current process lifetime covers these kernel queries; do not cache by
         // PID/path (exec and PID reuse would invalidate such a cache).
         return signingIdentity && platformBinary && signatureValid &&
-            XeDataPolicy::webKitGPU(signingIdentity(process),
+            XeDataPolicy::gpuClient(signingIdentity(process),
                 platformBinary(process) != 0, signatureValid(process) != 0);
     }
     // The native compiler exception is only needed on Sonoma and later.
