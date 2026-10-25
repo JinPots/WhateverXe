@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Fix internal panel flickering: default to 8-bit depth when EDID unavailable for internal eDP panels.
+- Fix internal panel flickering: cap internal eDP panels at 8-bit to prevent FRC dithering flicker on panels that report higher bit depths in EDID.
 - Fix create draft release workflow: remove hardcoded repository check.
 
 ### Added
