@@ -83,6 +83,7 @@ BIOS/UEFIで設定できる場合は、**DVMT Pre-Allocatedを96MB**にします
 - 内蔵画面の輝度調整には`SSDT-PNLF`を追加します。
 - GPUは自動選択するため、通常は`device-id`上書きは不要です。
 - Alder Lake-N / Twin LakeとAlder Lake-H/P/U / Raptor Lake-H/P/Uではタイル形式を自動選択します。`-yTileDisable`は使わないでください。`AAPL,GfxYTile`は不要です。
+- Tiger LakeのドナーeDPスリープ／復帰は試験的で、`-wex-tgl-sleep`による明示的なオプトインが必要です。TGLの表示構成でシステムスリープを試す場合だけ有効にしてください。
 
 ## 動作確認済みの機能と既知の問題
 
@@ -100,13 +101,14 @@ BIOS/UEFIで設定できる場合は、**DVMT Pre-Allocatedを96MB**にします
 
 MIPI DSI対応は**試験的**で、検証したGPD MicroPC 2・CHUWI MiniBook X N100/U300の内蔵パネルに限ります。他の機器での動作を期待しないでください。
 
-システム全体のスリープ／復帰対応は**試験的**です。実機確認済みの構成は、機種別ACPI設定を使用したMiniBook X N100/U300（MIPI DSI）のBig Sur・Tahoeで、内蔵単独と外部2画面までです。他機種・他OSと長時間のDarkWake反復は未検証です。
+システム全体のスリープ／復帰対応は**試験的**です。実機確認済みの構成は、機種別ACPI設定を使用したMiniBook X N100/U300（MIPI DSI）のBig Sur・Tahoeで、内蔵単独と外部2画面までです。Tiger LakeのドナーeDPスリープ／復帰は`-wex-tgl-sleep`による試験的なオプトインです。他機種・他OSと長時間のDarkWake反復は未検証です。
 
 ### 既知の問題と制限
 
 - DisplayPortの再接続で黒画面・停止が起きる場合があります。Tiger LakeのUSB-C再接続にも未解決の問題があり、Alder Lake-SのDP表示開始・再接続は時間がかかる場合があります。
 - 一部の画像変換でアプリがクラッシュし、SequoiaのApp Store動画ではGPUが停止することがあります。
-- Safari動画で時折コマ落ちします。FairPlay保護コンテンツは未対応です。
+- Safari動画で時折コマ落ちします。FairPlay保護コンテンツには、別途用意したVAMEバンドルと対応するGraphicsバイナリのパッチが必要です。WEXには同梱していません。
+- Apple Musicなどの保護されたメディア再生には、対応するGraphicsパッケージも必要です。
 - 同時表示は最大3画面です。検証構成を超える解像度は未検証です。
 - 一部の端子配線・輝度制御方式、MST、Thunderbolt管理の出力は未対応です。
 
@@ -125,6 +127,15 @@ python3 tools/test.py
 ```
 
 出力先は`build/`です。AppleIntelTGLCompatもここでビルドし、Graphicsで配布します。任意の実ドライバー再生試験には`--donor`・`--accelerator`で対応する原本を指定します。
+
+別配布のGraphicsユーザー空間バンドルには、`tools/patch_graphics.py`でMetalのコマンドバッファリーク修正とTiger Lake VAME検索修正を個別に適用できます。
+
+```sh
+python3 tools/patch_graphics.py --mtl-driver ORIGINAL --mtl-output PATCHED
+python3 tools/patch_graphics.py --va-driver ORIGINAL --va-output PATCHED
+```
+
+元のバイナリと別の出力先を指定し、インプレース変更は行わず、適用後に対象クライアントまたはシステムを再起動してください。このツールはAppleバイナリを同梱せず、VAMEバンドルも導入しません。
 
 ## ライセンスとクレジット
 

@@ -83,6 +83,7 @@ These settings are unnecessary at 96MB and do not increase firmware-allocated me
 - Add `SSDT-PNLF` for internal-display brightness control.
 - GPU selection is automatic; a `device-id` override is normally unnecessary.
 - Alder Lake-N / Twin Lake and Alder Lake-H/P/U / Raptor Lake-H/P/U select tiling automatically. Do not use `-yTileDisable`; `AAPL,GfxYTile` is unnecessary.
+- Tiger Lake donor-eDP sleep/wake is experimental and opt-in with `-wex-tgl-sleep`; keep it disabled unless testing system sleep on a TGL display setup.
 
 ## Tested features and known issues
 
@@ -100,13 +101,14 @@ The common regression checks cover Metal, OpenGL, OpenCL, hardware H.264 encode/
 
 MIPI DSI support is **experimental**, limited to the tested GPD MicroPC 2 and CHUWI MiniBook X N100/U300 panels. Do not expect it to work on other devices.
 
-System sleep/wake support is **experimental**. Tested configurations are MiniBook X N100/U300 (MIPI DSI) on Big Sur and Tahoe with model-specific ACPI settings, using the internal display alone or up to two external displays. Other models, OS versions and prolonged DarkWake cycles remain unverified.
+System sleep/wake support is **experimental**. Tested configurations are MiniBook X N100/U300 (MIPI DSI) on Big Sur and Tahoe with model-specific ACPI settings, using the internal display alone or up to two external displays. Tiger Lake donor-eDP sleep/wake is an opt-in trial with `-wex-tgl-sleep`; other models, OS versions and prolonged DarkWake cycles remain unverified.
 
 ### Known issues and limits
 
 - DisplayPort reconnection can cause black screens or freezes. Tiger Lake USB-C reconnection is also unreliable; Alder Lake-S DP output/reconnection can be slow.
 - Some image-conversion operations can crash applications; App Store video can freeze the GPU on Sequoia.
-- Safari video may occasionally drop frames. FairPlay-protected playback is unsupported.
+- Safari video may occasionally drop frames. FairPlay-protected playback requires the separately supplied VAME bundle and compatible patched Graphics binaries; WEX does not ship them.
+- Apple Music and other protected media playback still depends on the companion graphics package.
 - Up to three displays are supported. Resolutions beyond the tested configurations remain unverified.
 - Some connector layouts and backlight methods, MST and Thunderbolt-managed outputs are unsupported.
 
@@ -125,6 +127,15 @@ python3 tools/test.py
 ```
 
 Output is under `build/`. AppleIntelTGLCompat is built here and distributed through Graphics. Optional exact-donor tests accept `--donor` and `--accelerator` paths.
+
+For the separately distributed Graphics user-space bundles, `tools/patch_graphics.py` can apply exact, opt-in fixes for the Metal command-buffer leak and Tiger Lake VAME lookup:
+
+```sh
+python3 tools/patch_graphics.py --mtl-driver ORIGINAL --mtl-output PATCHED
+python3 tools/patch_graphics.py --va-driver ORIGINAL --va-output PATCHED
+```
+
+Supply original binaries and separate output paths; do not patch in place, then restart affected clients or reboot. The tool does not include Apple binaries or install a VAME bundle.
 
 ## License and credits
 
