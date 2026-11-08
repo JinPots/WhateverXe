@@ -58,7 +58,8 @@ void XeHost::processKernel(KernelPatcher &patcher) {
  active=profile.displayAdmitted();
 
  const auto display=XELP::displayAdapter(profile.family);
- systemWakeRecovery=active && (display==XELP::DisplayAdapter::ADLP || display==XELP::DisplayAdapter::ADLN);
+ const bool tglSleep=display==XELP::DisplayAdapter::TGL && checkKernelArgument("-wex-tgl-sleep");
+ systemWakeRecovery=active && (display==XELP::DisplayAdapter::ADLP || display==XELP::DisplayAdapter::ADLN || tglSleep);
  backlightEnabled=active && (display==XELP::DisplayAdapter::TGL || display==XELP::DisplayAdapter::ADLS ||
   display==XELP::DisplayAdapter::ADLP || display==XELP::DisplayAdapter::ADLN) &&
   info->firmwareVendor!=DeviceInfo::FirmwareVendor::Apple;
@@ -423,4 +424,3 @@ void XeHost::wrapFramebufferInit(IOFramebuffer *fb) {
 		}
 	}
 }
-
