@@ -63,9 +63,31 @@ int main() {
     }
     for (auto name : {"", "other.dylib", "descriptor.dylib.old", "../Info.plist"})
         assert(clientForFile((mtl+name).c_str(), true) == Client::None);
+    for (const std::string &vame : {
+        std::string("/Library/GPUBundles/AppleIntelTGLGraphicsVAME.bundle/Contents/MacOS/AppleIntelTGLGraphicsVAME"),
+        std::string("/Library/GPUBundles/AppleIntelICLGraphicsVAME.bundle/Contents/MacOS/AppleIntelICLGraphicsVAME"),
+        std::string("/Library/GPUBundles/AppleIntelICLGraphicsVAME.bundle/Contents/MacOS/AppleIntelTGLGraphicsVAME")}) {
+        assert(clientForFile(vame.c_str(), true) == Client::WebKitGPU);
+        assert(clientForFile(("/System/Volumes/Data"+vame).c_str(), true) == Client::WebKitGPU);
+        assert(clientForFile(vame.c_str(), false) == Client::None);
+    }
+    assert(clientForFile("/Library/GPUBundles/AppleIntelTGLGraphicsVAME.bundle/Contents/MacOS/other", true) == Client::None);
     assert(!service(web, Client::Compiler));
     assert(!service(metal, Client::WebKitGPU));
     assert(!service("/tmp/com.apple.WebKit.GPU", Client::WebKitGPU));
     assert(!service(metal, Client::None));
     assert(clientForFile((base+"MacOS/adapter.dylib").c_str(), true) == Client::Compiler);
+    for (const char *identity : {"com.apple.Music", "com.apple.TV", "com.apple.Podcasts",
+        "com.apple.controlcenter", "com.apple.QuickTimePlayerX",
+        "com.apple.coremedia.audioencoder", "com.apple.coremedia.audioencoder.zonto",
+        "com.apple.coremedia.audiodecoder", "com.apple.coremedia.audiodecoder.zonto",
+        "com.apple.coremedia.videoencoder", "com.apple.coremedia.videodecoder"}) {
+        assert(mediaGPU(identity, true, true));
+        assert(!mediaGPU(identity, false, true));
+        assert(!mediaGPU(identity, true, false));
+    }
+    for (const char *identity : {static_cast<const char *>(nullptr), "", "com.apple.MusicHelper",
+        "com.apple.coremedia.audioencoderx", "com.apple.WebKit.GPU"}) {
+        assert(!mediaGPU(identity, true, true));
+    }
 }

@@ -52,6 +52,14 @@ int main() {
     pathError=true; assert(!allowed((void*)1,true)); pathError=false;
     target="/Library/GPUBundles/AppleIntelTGLGraphicsVADriver.bundle/Contents/MacOS/unlisted";
     assert(!allowed((void*)1,true));
+    target="/Library/GPUBundles/AppleIntelTGLGraphicsMTLDriver.bundle/Contents/MacOS/descriptor.dylib";
+    identity="com.apple.Music";
+    assert(allowed((void*)1,true));
+    identity="com.apple.coremedia.audiodecoder";
+    assert(allowed((void*)1,true));
+    identity="com.apple.MusicHelper";
+    assert(!allowed((void*)1,true));
+    identity="com.apple.WebKit.GPU";
     target="/Library/GPUBundles/XeCompilerAdapter.bundle/Contents/MacOS/adapter.dylib";
     imagePath="/System/Library/Frameworks/Metal.framework/Versions/A/XPCServices/MTLCompilerService.xpc/Contents/MacOS/MTLCompilerService";
     for(version=20;version<=25;++version) assert(allowed((void*)1,true)==(version>=23));

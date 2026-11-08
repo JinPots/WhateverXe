@@ -41,9 +41,12 @@ bool allowed(void *vnode, bool executable) {
     if (client == XeDataPolicy::Client::WebKitGPU) {
         // Current process lifetime covers these kernel queries; do not cache by
         // PID/path (exec and PID reuse would invalidate such a cache).
-        return signingIdentity && platformBinary && signatureValid &&
-            XeDataPolicy::webKitGPU(signingIdentity(process),
-                platformBinary(process) != 0, signatureValid(process) != 0);
+        if (!signingIdentity || !platformBinary || !signatureValid) return false;
+        const auto identity=signingIdentity(process);
+        const auto platform=platformBinary(process)!=0;
+        const auto valid=signatureValid(process)!=0;
+        return XeDataPolicy::webKitGPU(identity,platform,valid) ||
+            XeDataPolicy::mediaGPU(identity,platform,valid);
     }
     // The native compiler exception is only needed on Sonoma and later.
     if (getKernelVersion() < KernelVersion::Sonoma) return false;

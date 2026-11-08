@@ -10,6 +10,23 @@ enum class Client { None, Compiler, WebKitGPU };
 inline bool webKitGPU(const char *identity, bool platformBinary, bool valid) {
     return platformBinary && valid && identity && !strcmp(identity, "com.apple.WebKit.GPU");
 }
+inline bool mediaGPU(const char *identity, bool platformBinary, bool valid) {
+    if (!platformBinary || !valid || !identity) return false;
+    if (!strcmp(identity, "com.apple.Music") ||
+        !strcmp(identity, "com.apple.TV") ||
+        !strcmp(identity, "com.apple.Podcasts") ||
+        !strcmp(identity, "com.apple.controlcenter") ||
+        !strcmp(identity, "com.apple.QuickTimePlayerX"))
+        return true;
+    return (!strncmp(identity, "com.apple.coremedia.audioencoder", 32) &&
+            (identity[32] == '\0' || identity[32] == '.')) ||
+           (!strncmp(identity, "com.apple.coremedia.audiodecoder", 32) &&
+            (identity[32] == '\0' || identity[32] == '.')) ||
+           (!strncmp(identity, "com.apple.coremedia.videoencoder", 32) &&
+            (identity[32] == '\0' || identity[32] == '.')) ||
+           (!strncmp(identity, "com.apple.coremedia.videodecoder", 32) &&
+            (identity[32] == '\0' || identity[32] == '.'));
+}
 inline bool service(const char *path, Client client = Client::Compiler) {
     // Compiler access keeps its original exact-path contract. WebKit has no
     // path-based fallback: even a familiar location must pass signature checks.
@@ -44,10 +61,23 @@ inline Client clientForFile(const char *path, bool executable) {
             Client::WebKitGPU : Client::None;
     }
     constexpr const char metal[] = "/Library/GPUBundles/AppleIntelTGLGraphicsMTLDriver.bundle/Contents/MacOS/";
-    if (strncmp(path, metal, sizeof(metal)-1)) return Client::None;
-    path += sizeof(metal)-1;
-    return !strcmp(path, "AppleIntelTGLGraphicsMTLDriver") || !strcmp(path, "descriptor.dylib") ||
-        !strcmp(path, "impostor.dylib") || !strcmp(path, "libigdmd.dylib") ? Client::WebKitGPU : Client::None;
+    if (!strncmp(path, metal, sizeof(metal)-1)) {
+        path += sizeof(metal)-1;
+        return (!strcmp(path, "AppleIntelTGLGraphicsMTLDriver") || !strcmp(path, "descriptor.dylib") ||
+            !strcmp(path, "impostor.dylib") || !strcmp(path, "libigdmd.dylib")) ?
+            Client::WebKitGPU : Client::None;
+    }
+    constexpr const char tglVAME[] = "/Library/GPUBundles/AppleIntelTGLGraphicsVAME.bundle/Contents/MacOS/";
+    constexpr const char iclVAME[] = "/Library/GPUBundles/AppleIntelICLGraphicsVAME.bundle/Contents/MacOS/";
+    if (!strncmp(path, tglVAME, sizeof(tglVAME)-1)) {
+        path += sizeof(tglVAME)-1;
+    } else if (!strncmp(path, iclVAME, sizeof(iclVAME)-1)) {
+        path += sizeof(iclVAME)-1;
+    } else {
+        return Client::None;
+    }
+    return !strcmp(path, "AppleIntelTGLGraphicsVAME") ||
+        !strcmp(path, "AppleIntelICLGraphicsVAME") ? Client::WebKitGPU : Client::None;
 }
 inline bool readOnly(int mode) { return mode == 1; } // FREAD, no create/truncate/write flags.
 inline bool executeOnly(int prot, int flags) {
