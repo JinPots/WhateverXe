@@ -127,6 +127,7 @@
   "-wex-tgl-hold-render-wake": [
     "-tglholdrenderwake"
   ],
+  "-wex-tgl-sleep": [],
   "-wex-tc-aux": [
     "-tgltc-aux"
   ],
