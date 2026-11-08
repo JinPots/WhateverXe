@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """Replay actual host admission: no PCI reads before successful publication."""
 from pathlib import Path
-import re,subprocess,tempfile
+import os,re,shutil,subprocess,tempfile
 r=Path(__file__).resolve().parents[1]
+compiler=shutil.which(os.environ.get('CXX','clang++'))
+if not compiler:
+ print('SKIP host publication: no C++ compiler found (set CXX to enable)')
+ raise SystemExit(0)
 adapter=(r/'WhateverXe/kern_xelp_device.hpp').read_text();adapter=adapter[adapter.index('namespace XELP {'):adapter.rindex('#endif')]
 s=(r/'WhateverXe/kern_host.cpp').read_text();body=s[s.index('void XeHost::processKernel'):s.index('bool XeHost::wrapPanelSetDisplay')]
 header=(r/'WhateverXe/kern_host.hpp').read_text()
@@ -296,5 +300,5 @@ puts("PASS actual host admission: absent/unpublished/unsupported GPUs never ente
 '''
 with tempfile.TemporaryDirectory(prefix='wxe-host-') as d:
  p=Path(d);(p/'test.cpp').write_text(code)
- subprocess.run(['clang++','-std=c++17','-fsanitize=address,undefined','-I'+str(r/'WhateverXe'),str(p/'test.cpp'),'-o',str(p/'test')],check=True)
+ subprocess.run([compiler,'-std=c++17','-fsanitize=address,undefined','-I'+str(r/'WhateverXe'),str(p/'test.cpp'),'-o',str(p/'test')],check=True)
  subprocess.run([str(p/'test')],check=True)
