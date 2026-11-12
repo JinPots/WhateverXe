@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.1
+
+### Fixed
+
+- Fix an AVD_DestroyAVDAccelerator crash during media processing and thumbnail generation by admitting signed Apple media and QuickLook daemons.
+
 ## 0.8.0
 
 Use the latest [WhateverXe Graphics](https://github.com/b00t0x/WhateverXe-Graphics/releases) package with this update.

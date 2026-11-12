@@ -16,7 +16,11 @@ inline bool mediaGPU(const char *identity, bool platformBinary, bool valid) {
         !strcmp(identity, "com.apple.TV") ||
         !strcmp(identity, "com.apple.Podcasts") ||
         !strcmp(identity, "com.apple.controlcenter") ||
-        !strcmp(identity, "com.apple.QuickTimePlayerX"))
+        !strcmp(identity, "com.apple.QuickTimePlayerX") ||
+        !strcmp(identity, "com.apple.mediaanalysisd") ||
+        !strcmp(identity, "com.apple.quicklook.ThumbnailsAgent") ||
+        !strcmp(identity, "com.apple.quicklookd") ||
+        !strcmp(identity, "com.apple.Photos"))
         return true;
     return (!strncmp(identity, "com.apple.coremedia.audioencoder", 32) &&
             (identity[32] == '\0' || identity[32] == '.')) ||
@@ -25,7 +29,9 @@ inline bool mediaGPU(const char *identity, bool platformBinary, bool valid) {
            (!strncmp(identity, "com.apple.coremedia.videoencoder", 32) &&
             (identity[32] == '\0' || identity[32] == '.')) ||
            (!strncmp(identity, "com.apple.coremedia.videodecoder", 32) &&
-            (identity[32] == '\0' || identity[32] == '.'));
+            (identity[32] == '\0' || identity[32] == '.')) ||
+           (!strncmp(identity, "com.apple.coremedia.videoprocessor", 34) &&
+            (identity[34] == '\0' || identity[34] == '.'));
 }
 inline bool service(const char *path, Client client = Client::Compiler) {
     // Compiler access keeps its original exact-path contract. WebKit has no
